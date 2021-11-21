@@ -8,20 +8,26 @@ public class PlayerController : MonoBehaviour
     IMouseInput _control;
 
     public static PlayerController Current;
+    private float _scoreTimer=0;
 
-
+    [Header("Player Move")]
     public float limitX;
     public float xSpeed;
     public float runningSpeed;
     private float _currentRunningSpeed;
     public GameObject ridingCubePrefab;
     public List<RidingCube> cubes;
+    private bool _finished;
 
-    //BridgeSpawner
-    private bool _spawningBridge;
+
+    [Header("BridgeSpawner")]
     public GameObject bridgePiecePrefab;
+    private bool _spawningBridge;
     private BridgeSpawner _bridgeSpawner;
     private float _creatingBridgeTimer;
+
+    [Header("Animator")]
+    public Animator animator;
     private void Awake()
     {
         _input= new PcInput();
@@ -69,6 +75,15 @@ public class PlayerController : MonoBehaviour
                 Vector3 newPiecePosition = _bridgeSpawner.startReference.transform.position + direction * characterDistance;
                 newPiecePosition.x = transform.position.x;
                 createdBridgePiece.transform.position = newPiecePosition;
+                if (_finished)
+                {
+                    _scoreTimer -= Time.deltaTime;
+                    if (_scoreTimer<0)
+                    {
+                        _scoreTimer = 0.3f;
+                        LevelController.Current.ChangeScore(1);
+                    }
+                }
             }
         }
     }
@@ -80,6 +95,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log(other.tag);
         if (other.tag=="AddCube")
         {
             IncrementCubeVolume(0.1f);
@@ -91,6 +107,15 @@ public class PlayerController : MonoBehaviour
         else if (other.tag == "StopSpawnBridge")
         {
             StopSpawningBridge();
+            if (_finished)
+            {
+                LevelController.Current.FinishGame();
+            }
+        }
+        else if (other.tag == "Finish")
+        {
+            _finished = true;
+            StartSpawningBridge(other.transform.parent.GetComponent<BridgeSpawner>());
         }
     }
 
@@ -112,7 +137,14 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
-                //GameOver
+                if (_finished)
+                {
+                    LevelController.Current.FinishGame();
+                }
+                else
+                {
+                    LevelController.Current.GameOver();
+                }
             }
         }
         else
