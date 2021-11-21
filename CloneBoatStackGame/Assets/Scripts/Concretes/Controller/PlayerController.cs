@@ -47,8 +47,16 @@ public class PlayerController : MonoBehaviour
     {
         if (other.tag=="AddCube")
         {
-            IncrementCubeVolume(0.2f);
+            IncrementCubeVolume(0.1f);
             Destroy(other.gameObject);
+        }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.tag=="Trap")
+        {
+            IncrementCubeVolume(-Time.fixedDeltaTime);
         }
     }
 
