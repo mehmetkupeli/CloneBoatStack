@@ -31,10 +31,14 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         Current = this;
-        _currentRunningSpeed = runningSpeed;
+       
     }
     private void Update()
     {
+        if (LevelController.Current==null || !LevelController.Current.isGameActive)
+        {
+            return;
+        }
         float newX = 0;
         float touchXDelta=0;
 
@@ -67,6 +71,11 @@ public class PlayerController : MonoBehaviour
                 createdBridgePiece.transform.position = newPiecePosition;
             }
         }
+    }
+
+    public void ChangeSpeed(float value)
+    {
+        _currentRunningSpeed = value;
     }
 
     private void OnTriggerEnter(Collider other)
