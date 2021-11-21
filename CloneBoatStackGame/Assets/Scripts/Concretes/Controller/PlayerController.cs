@@ -6,10 +6,16 @@ public class PlayerController : MonoBehaviour
 {
     IPlayerInput _input;
     IMouseInput _control;
+
+    public static PlayerController Current;
+
+
     public float limitX;
     public float runningSpeed;
     public float xSpeed;
     private float _currentRunningSpeed;
+    public GameObject ridingCubePrefab;
+    public List<RidingCube> cubes;
     private void Awake()
     {
         _input= new PcInput();
@@ -18,6 +24,7 @@ public class PlayerController : MonoBehaviour
     }
     private void Start()
     {
+        Current = this;
         _currentRunningSpeed = runningSpeed;
     }
     private void Update()
@@ -36,4 +43,44 @@ public class PlayerController : MonoBehaviour
         transform.position = newPosition;
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.tag=="AddCube")
+        {
+            IncrementCubeVolume(0.2f);
+            Destroy(other.gameObject);
+        }
+    }
+
+    public void IncrementCubeVolume(float value)
+    {
+        if (cubes.Count==0)
+        {
+            if (value>0)
+            {
+                CreateCube(value);
+            }
+            else
+            {
+                //GameOver
+            }
+        }
+        else
+        {
+            cubes[cubes.Count - 1].IncrementCubeVolume(value);//lastCube update
+        }
+    }
+
+    public void CreateCube(float value)
+    {
+        RidingCube createdCube = Instantiate(ridingCubePrefab,transform).GetComponent<RidingCube>();
+        cubes.Add(createdCube);
+        createdCube.IncrementCubeVolume(value);
+    }
+
+    public void DestroyCube(RidingCube cube)
+    {
+        cubes.Remove(cube);
+        Destroy(cube.gameObject);
+    }
 }
