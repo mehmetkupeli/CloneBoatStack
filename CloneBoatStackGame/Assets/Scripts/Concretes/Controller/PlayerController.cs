@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     IPlayerInput _input;
-    IMouseInput _control;
+    ITouchInput _control;
 
     public static PlayerController Current;
     private float _scoreTimer=0;
@@ -34,8 +34,8 @@ public class PlayerController : MonoBehaviour
     public Animator animator;
     private void Awake()
     {
-        _input= new PcInput();
-        _control = new PcInput();
+        _input= new MobileInput();
+        _control = new MobileInput();
     }
     private void Start()
     {
