@@ -19,6 +19,10 @@ public class PlayerController : MonoBehaviour
     public List<RidingCube> cubes;
     private bool _finished;
 
+    [Header("BridgeSpawner")]
+    public AudioSource cubeAudioSource;
+    public AudioClip gatherAudioClip, dropAudioClip;
+    private float _dropSoundTimer;
 
     [Header("BridgeSpawner")]
     public GameObject bridgePiecePrefab;
@@ -32,7 +36,6 @@ public class PlayerController : MonoBehaviour
     {
         _input= new PcInput();
         _control = new PcInput();
-
     }
     private void Start()
     {
@@ -60,6 +63,7 @@ public class PlayerController : MonoBehaviour
 
         if (_spawningBridge)
         {
+            PlayDropSound();
             _creatingBridgeTimer -= Time.deltaTime;
             if (_creatingBridgeTimer<0)
             {
@@ -98,6 +102,7 @@ public class PlayerController : MonoBehaviour
         Debug.Log(other.tag);
         if (other.tag=="AddCube")
         {
+            cubeAudioSource.PlayOneShot(gatherAudioClip,0.1f);
             IncrementCubeVolume(0.1f);
             Destroy(other.gameObject);
         }else if (other.tag == "SpawnBridge")
@@ -121,10 +126,15 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        if (other.tag=="Trap")
+        if (LevelController.Current.isGameActive)
         {
-            IncrementCubeVolume(-Time.fixedDeltaTime);
+            if (other.tag == "Trap")
+            {
+                PlayDropSound();
+                IncrementCubeVolume(-Time.fixedDeltaTime);
+            }
         }
+        
     }
 
     public void IncrementCubeVolume(float value)
@@ -143,7 +153,7 @@ public class PlayerController : MonoBehaviour
                 }
                 else
                 {
-                    LevelController.Current.GameOver();
+                    Die();
                 }
             }
         }
@@ -151,6 +161,13 @@ public class PlayerController : MonoBehaviour
         {
             cubes[cubes.Count - 1].IncrementCubeVolume(value);//lastCube update
         }
+    }
+    public void Die()
+    {
+        animator.SetBool("isDead",true);
+        gameObject.layer = 8;
+        Camera.main.transform.SetParent(null);
+        LevelController.Current.GameOver();
     }
 
     public void CreateCube(float value)
@@ -175,5 +192,15 @@ public class PlayerController : MonoBehaviour
     public void StopSpawningBridge()
     {
         _spawningBridge = false;
+    }
+
+    public void PlayDropSound()
+    {
+        _dropSoundTimer -= Time.deltaTime;
+        if (_dropSoundTimer<0)
+        {
+            _dropSoundTimer = 0.15f;
+            cubeAudioSource.PlayOneShot(dropAudioClip,0.1f);
+        }
     }
 }

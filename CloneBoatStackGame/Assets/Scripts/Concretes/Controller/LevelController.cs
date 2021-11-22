@@ -23,6 +23,10 @@ public class LevelController : MonoBehaviour
 
     //Score
     int score;
+
+    //Audio
+    public AudioSource gameMusicAudioSource;
+    public AudioClip victoryAudioClip, gameOverAudioClip;
     private void Start()
     {
         Current = this;
@@ -36,6 +40,7 @@ public class LevelController : MonoBehaviour
             currentLevelText.text = (currentLevel + 1).ToString();
             nextLevelText.text = (currentLevel + 2).ToString();
         }
+        gameMusicAudioSource = Camera.main.GetComponent<AudioSource>();
     }
     private void Update()
     {
@@ -67,6 +72,8 @@ public class LevelController : MonoBehaviour
     }
     public void GameOver()
     {
+        gameMusicAudioSource.Stop();
+        gameMusicAudioSource.PlayOneShot(gameOverAudioClip);
         gameMenu.SetActive(false);
         gameOverMenu.SetActive(true);
         isGameActive = false;
@@ -74,6 +81,8 @@ public class LevelController : MonoBehaviour
 
     public void FinishGame()
     {
+        gameMusicAudioSource.Stop();
+        gameMusicAudioSource.PlayOneShot(victoryAudioClip);
         PlayerPrefs.SetInt("currentLevel",currentLevel+1);
         finishScoreText.text = score.ToString();
         gameMenu.SetActive(false);

@@ -356,6 +356,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Finish Line
       objectReference: {fileID: 0}
+    - target: {fileID: 7217528329550171152, guid: d5203baa42a8f3a4aba360d0fe675375, type: 3}
+      propertyPath: m_TagString
+      value: Untagged
+      objectReference: {fileID: 0}
     - target: {fileID: 7217528329550171153, guid: d5203baa42a8f3a4aba360d0fe675375, type: 3}
       propertyPath: m_RootOrder
       value: 17
