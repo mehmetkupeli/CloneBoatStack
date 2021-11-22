@@ -11,15 +11,15 @@ public class LevelController : MonoBehaviour
 
     //GameUI
     public GameObject startMenu, gameMenu, gameOverMenu, finishMenu;
-    public Text scoreText, finishScoreText, currentLevelText, nextLevelText,startingMenuMoneyText,gameOverMenuMoneyText,finishGameMenuMoneyText;
+    public Text scoreText, finishScoreText, currentLevelText, nextLevelText, startingMenuMoneyText, gameOverMenuMoneyText, finishGameMenuMoneyText;
     public Slider levelProgressBar;
-    
+
     //Finish Process
     public float maxDistance;
     public GameObject finishLine;
 
     //currentLevel
-    int currentLevel;
+    public int currentLevel;
 
     //Score
     int score;
@@ -32,16 +32,12 @@ public class LevelController : MonoBehaviour
     {
         Current = this;
         currentLevel = PlayerPrefs.GetInt("currentLevel"); //First input getint=0
-        if (SceneManager.GetActiveScene().name!="Level "+currentLevel)//Now Level name
-        {
-            SceneManager.LoadScene("Level " + currentLevel);
-        }
-        else
-        {
-            currentLevelText.text = (currentLevel + 1).ToString();
-            nextLevelText.text = (currentLevel + 2).ToString();
-            UpdateMoneyTexts();
-        }
+
+
+        currentLevelText.text = (currentLevel + 1).ToString();
+        nextLevelText.text = (currentLevel + 2).ToString();
+        UpdateMoneyTexts();
+
         gameMusicAudioSource = Camera.main.GetComponent<AudioSource>();
     }
     private void Update()
@@ -60,17 +56,17 @@ public class LevelController : MonoBehaviour
         PlayerController.Current.ChangeSpeed(PlayerController.Current.runningSpeed);
         startMenu.SetActive(false);
         gameMenu.SetActive(true);
-        PlayerController.Current.animator.SetBool("isRunning",true);
+        PlayerController.Current.animator.SetBool("isRunning", true);
         isGameActive = true;
     }
 
     public void RestartLevel()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name); //Loaded restart Active scene 
+        LevelLoader.Current.ChangeLevel(SceneManager.GetActiveScene().name); //Loaded restart Active scene 
     }
     public void LoadNextLevel()
     {
-        SceneManager.LoadScene("Level " + (currentLevel+1));
+        LevelLoader.Current.ChangeLevel("Level " + (currentLevel + 1));
     }
     public void GameOver()
     {
@@ -84,14 +80,14 @@ public class LevelController : MonoBehaviour
 
     public void FinishGame()
     {
-        
+
         int money = PlayerPrefs.GetInt("money");
         money++;
-        PlayerPrefs.SetInt("money",money);
+        PlayerPrefs.SetInt("money", money);
         finishGameMenuMoneyText.text = PlayerPrefs.GetInt("money").ToString();
         gameMusicAudioSource.Stop();
         gameMusicAudioSource.PlayOneShot(victoryAudioClip);
-        PlayerPrefs.SetInt("currentLevel",currentLevel+1);
+        PlayerPrefs.SetInt("currentLevel", currentLevel + 1);
         finishScoreText.text = score.ToString();
         gameMenu.SetActive(false);
         finishMenu.SetActive(true);

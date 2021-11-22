@@ -20,7 +20,7 @@ public class MobileInput : IPlayerInput,ITouchInput
                 }
                 else if (Input.GetTouch(0).phase == TouchPhase.Moved)
                 {
-                    touchXDelta = 5 * (lasTouchedX - Input.GetTouch(0).position.x) / Screen.width;
+                    touchXDelta = 5 * (Input.GetTouch(0).position.x - lasTouchedX) / Screen.width;
                     lasTouchedX = Input.GetTouch(0).position.x;
                 }
             }

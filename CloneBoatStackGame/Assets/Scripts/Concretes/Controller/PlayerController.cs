@@ -55,6 +55,11 @@ public class PlayerController : MonoBehaviour
         {
             touchXDelta = _input.Horizontal;
         }
+        if (LevelController.Current.currentLevel==1)
+        {
+            _currentRunningSpeed = 8;
+            xSpeed = 35;
+        }
 
         newX = transform.position.x + xSpeed * touchXDelta * Time.deltaTime;
         newX = Mathf.Clamp(newX,-limitX,limitX);
@@ -69,7 +74,8 @@ public class PlayerController : MonoBehaviour
             {
                 _creatingBridgeTimer = 0.01f;
                 IncrementCubeVolume(-0.01f);
-                GameObject createdBridgePiece=Instantiate(bridgePiecePrefab);
+                GameObject createdBridgePiece=Instantiate(bridgePiecePrefab,this.transform);
+                createdBridgePiece.transform.SetParent(null);
                 Vector3 direction = _bridgeSpawner.endReference.transform.position - _bridgeSpawner.startReference.transform.position;
                 float distance = direction.magnitude;
                 direction = direction.normalized;
