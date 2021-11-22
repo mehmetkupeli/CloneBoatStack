@@ -11,7 +11,7 @@ public class LevelController : MonoBehaviour
 
     //GameUI
     public GameObject startMenu, gameMenu, gameOverMenu, finishMenu;
-    public Text scoreText, finishScoreText, currentLevelText, nextLevelText;
+    public Text scoreText, finishScoreText, currentLevelText, nextLevelText,startingMenuMoneyText,gameOverMenuMoneyText,finishGameMenuMoneyText;
     public Slider levelProgressBar;
     
     //Finish Process
@@ -23,6 +23,7 @@ public class LevelController : MonoBehaviour
 
     //Score
     int score;
+
 
     //Audio
     public AudioSource gameMusicAudioSource;
@@ -39,6 +40,7 @@ public class LevelController : MonoBehaviour
         {
             currentLevelText.text = (currentLevel + 1).ToString();
             nextLevelText.text = (currentLevel + 2).ToString();
+            UpdateMoneyTexts();
         }
         gameMusicAudioSource = Camera.main.GetComponent<AudioSource>();
     }
@@ -72,6 +74,7 @@ public class LevelController : MonoBehaviour
     }
     public void GameOver()
     {
+        UpdateMoneyTexts();
         gameMusicAudioSource.Stop();
         gameMusicAudioSource.PlayOneShot(gameOverAudioClip);
         gameMenu.SetActive(false);
@@ -81,6 +84,11 @@ public class LevelController : MonoBehaviour
 
     public void FinishGame()
     {
+        
+        int money = PlayerPrefs.GetInt("money");
+        money++;
+        PlayerPrefs.SetInt("money",money);
+        finishGameMenuMoneyText.text = PlayerPrefs.GetInt("money").ToString();
         gameMusicAudioSource.Stop();
         gameMusicAudioSource.PlayOneShot(victoryAudioClip);
         PlayerPrefs.SetInt("currentLevel",currentLevel+1);
@@ -99,4 +107,11 @@ public class LevelController : MonoBehaviour
 
     }
 
+    public void UpdateMoneyTexts()
+    {
+        int money = PlayerPrefs.GetInt("money");
+        startingMenuMoneyText.text = money.ToString();
+        gameOverMenuMoneyText.text = money.ToString();
+        finishGameMenuMoneyText.text = money.ToString();
+    }
 }

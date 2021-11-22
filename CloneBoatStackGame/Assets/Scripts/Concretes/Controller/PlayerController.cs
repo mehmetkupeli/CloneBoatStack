@@ -19,9 +19,9 @@ public class PlayerController : MonoBehaviour
     public List<RidingCube> cubes;
     private bool _finished;
 
-    [Header("BridgeSpawner")]
-    public AudioSource cubeAudioSource;
-    public AudioClip gatherAudioClip, dropAudioClip;
+    [Header("Audio")]
+    public AudioSource cubeAudioSource, triggerAudioSource;
+    public AudioClip gatherAudioClip, dropAudioClip,coinAudioClip;
     private float _dropSoundTimer;
 
     [Header("BridgeSpawner")]
@@ -121,7 +121,13 @@ public class PlayerController : MonoBehaviour
         {
             _finished = true;
             StartSpawningBridge(other.transform.parent.GetComponent<BridgeSpawner>());
+        }else if (other.tag == "Coin")
+        {
+            triggerAudioSource.PlayOneShot(coinAudioClip,0.1f);
+            other.tag = "Untagged";
+            Destroy(other.gameObject);
         }
+        
     }
 
     private void OnTriggerStay(Collider other)
@@ -203,4 +209,6 @@ public class PlayerController : MonoBehaviour
             cubeAudioSource.PlayOneShot(dropAudioClip,0.1f);
         }
     }
+
+    
 }
